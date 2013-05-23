@@ -66,7 +66,7 @@
   (.exists (io/reader "http://www.google.com"))
   (def c (safe-config))
   (first  (.entrySet (->config c)))
-  (:foo.bar c)
+  (:foo.baz c)
   )
 
 ;; Interface called Config
