@@ -1,9 +1,10 @@
 (ns confil.extended-protocols
   (:require [confil.protocols :as protos]
-            [clojure.edn :as edn])
+            [clojure.java.io :as io]
+            [clojure.edn :as edn]
+            [clojure.walk :as walk])
   (:import (com.typesafe.config Config
-                                ConfigFactory)
-           (com.typesafe.config.impl SimpleConfig)))
+                                ConfigFactory)))
 
 (extend-protocol protos/Configure
 
@@ -11,7 +12,7 @@
   (-config
     ([t]
      (cond
-       (.endsWith t ".edn") (protos/-config (edn/read-string (slurp t)))
+       (.endsWith t ".edn") (protos/-config (-> t io/resource slurp edn/read-string))
        :else (let [_ (System/setProperty "config.resource" t)
                    conf (ConfigFactory/load)
                    _ (System/clearProperty "config.resource")]
@@ -21,14 +22,16 @@
 
   clojure.lang.IPersistentMap
   (-config
-    ([t])
-    ([t klass]))
+    ([t]
+     (ConfigFactory/parseMap (walk/stringify-keys t)))
+    ([t klass]
+     (cast klass (protos/-config t))))
 
   Config
   (-config
-    ([t] t)
+    ([t] (ConfigFactory/load t))
     ([t klass]
-     (cast klass (ConfigFactory/load t))))
+     (cast klass (protos/-config t))))
 
   nil
   (-config
