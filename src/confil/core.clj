@@ -44,6 +44,24 @@
    (and (valid-resource?! path-or-obj)
         (config path-or-obj ConfigImplementer))))
 
+(defn fallbacks
+  ""
+  [config-fn & confs]
+  (let [conf-objs (map (fn [[path-or-obj ConfigImplementer]]
+                         (if ConfigImplementer
+                           (config-fn path-or-obj ConfigImplementer)
+                           (config-fn path-or-obj))) confs)]
+    (reduce (fn [[final-conf new-conf]] (.withFallback new-conf final-conf)) conf-objs)))
+
+(defn safe-configs
+  "Create a new config by sequentially adding configs
+  as fallbacks.
+  e.g. (-> (safe-config 'one.conf') (.withFallback (safe-config 'two.conf')) ...)
+  If the config is a vector, it's treated as a [path-or-obj ConfigImplementer] pair"
+  [& confs]
+  (apply fallbacks safe-config confs))
+
+
 (comment
   (.exists (io/reader "http://www.google.com"))
   (def c (safe-config))
