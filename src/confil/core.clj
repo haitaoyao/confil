@@ -6,12 +6,18 @@
                                 ConfigValue)
            (java.io FileNotFoundException)))
 
-(defn config->hash-map [^Config config]
+(defn config->hash-map
+  "Returns a hash-map of the Typesafe Config.
+  The original Config is stored within the meta data under `::config`."
+  [^Config config]
   (with-meta (reduce (fn [accum-map [k ^ConfigValue config-value]]
                        (assoc accum-map (keyword k) (.unwrapped config-value))) {} (.entrySet config))
              {::config config}))
 
-(defn ->config [config-map]
+(defn ->config
+  "Returns the Typesafe Config for a given
+  config map that was created with `config->hash-map`."
+  [config-map]
   (::config (meta config-map)))
 
 (defn config
@@ -35,6 +41,8 @@
   true)
 
 (defn safe-config
+  "Like `config` but will throw a FileNotFound exception
+  if your config resource can't be located."
   ([]
    (safe-config "application.conf"))
   ([path-or-obj]
