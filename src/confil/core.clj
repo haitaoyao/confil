@@ -77,27 +77,3 @@
   (:foo.baz c)
   )
 
-;; Interface called Config
-;; our config/config returns an object
-;;
-;; Config conf = ConfigFactory.load();
-;; int bar1 = conf.getInt("foo.bar");
-;; Config foo = conf.getConfig("foo");
-;; int bar2 = foo.getInt("bar");
-;;
-
-;(confil/config) => "application.conf" within resources, standard Typesafe Config parser
-;(confil/config "some/path/to/a.conf") => within resources, standard Typesafe Config parser
-;(confil/config "/etc/my-app/application.conf" SaksConfig) => {} (.get % "some-attribute")
-;
-;(confil/config ...) is a protocol that dispatches on:
-; * strings (file/url/etc)
-; * hashmaps (config-like objects)
-; * Config objects (no-op)
-; * nil (empty Config)
-;
-;each returns Clojure hash-map, that fulfills the Config interface.
-;
-;"*.conf" => ConfigParser
-;"*.edn" => read-string-edn and then create the Config object from that
-
