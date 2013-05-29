@@ -13,6 +13,8 @@
     (is (thrown? java.io.FileNotFoundException (confil/safe-config "blarg.conf"))))
   (testing "with an edn resource, has correct config"
     (is (= [1 2 3] (:a (confil/safe-config "application.edn")))))
+  ;(testing "with an edn resource that has tagged literals, has correct config"
+  ;  (is (= [1 2 3] (:a (confil/safe-config "application_rl.edn")))))
   (testing "with a map, returns it back as a config"
     (is (= 7 (:foo.bar (confil/safe-config {:foo.bar 7})))))
   (testing "with nil has empty config"

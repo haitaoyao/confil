@@ -1,0 +1,13 @@
+{:a [1 2 3]
+ :timeout #confil/mseconds 500
+ :small-time #confil/nseconds 8
+ :sliding-window #confil/seconds 10
+ :index-time #confil/minutes 30
+ :copy-log-time #confil/hours 3
+ :backup-db-time #confil/days 1
+ :important-date #confil/date "10/10/2013"
+ :filesize-limit #confil/kbytes 512
+ :write-size #confil/mbytes 3.5
+ :db-size #confil/gbytes 10
+ :segment-size #confil/bytes 2}
+
