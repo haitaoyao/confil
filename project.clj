@@ -1,4 +1,4 @@
-(defproject ohpauleez/confil "0.1.0-beta1"
+(defproject ohpauleez/confil "0.1.0-beta5"
   :description "Consuming Typesafe's Config from Clojure"
   :url "https://github.com/ohpauleez/confil"
   :license {:name "Eclipse Public License"

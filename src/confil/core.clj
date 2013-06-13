@@ -52,14 +52,21 @@
    (and (valid-resource?! path-or-obj)
         (config path-or-obj ConfigImplementer))))
 
+(defn typesafe-config? [possible-config]
+  (instance? Config possible-config))
+
 (defn fallbacks
-  ""
+  "Set a series of Configs to fallback.
+  Optionally cast the config by placing it in a vector: [config ConfigImplementerClass]"
   [config-fn & confs]
-  (let [conf-objs (map (fn [[path-or-obj ConfigImplementer]]
-                         (if ConfigImplementer
+  (let [conf-objs (map (fn [[path-or-obj ConfigImplementer :as config-entry]]
+                         (if (class? ConfigImplementer)
                            (config-fn path-or-obj ConfigImplementer)
-                           (config-fn path-or-obj))) confs)]
-    (reduce (fn [[final-conf new-conf]] (.withFallback new-conf final-conf)) conf-objs)))
+                           (config-fn config-entry))) confs)]
+    (config->hash-map
+      (reduce (fn [final-conf new-conf] (.withFallback (->config new-conf) final-conf))
+              (->config (first conf-objs))
+              (rest conf-objs)))))
 
 (defn safe-configs
   "Create a new config by sequentially adding configs
@@ -67,7 +74,7 @@
   e.g. (-> (safe-config 'one.conf') (.withFallback (safe-config 'two.conf')) ...)
   If the config is a vector, it's treated as a [path-or-obj ConfigImplementer] pair"
   [& confs]
-  (apply fallbacks safe-config confs))
+  (apply fallbacks (conj confs safe-config)))
 
 
 (comment
